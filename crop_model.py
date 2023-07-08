@@ -1,13 +1,13 @@
 import pandas as pd
 import pickle
 
-dataset = pd.read_csv('crop_recommendation.csv')
+dataset = pd.read_csv('crop_prediction.csv')
 
 selected_features = ['N', 'P', 'K', 'temperature', 'humidity', 'ph', 'rainfall']
 
 X = dataset[selected_features]
 
-with open('crop_recommendation.pkl', 'rb') as f:
+with open('crop_prediction.pkl', 'rb') as f:
     model = pickle.load(f)
 
 X['temperature_mean'] = X['temperature'].mean()

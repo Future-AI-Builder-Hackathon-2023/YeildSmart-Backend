@@ -7,7 +7,7 @@ import pickle
 app = FastAPI()
 origins = ["*"]
 
-app.add_midleware(
+app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
@@ -27,6 +27,9 @@ class cropInfo(BaseModel):
     ph: int
     rainfall: int
 
+@app.get('/')
+async def welcomeCropPrediction():
+    return {"result": "Welcome pridiction crop"}
 
 @app.post('/predictCrop')
 async def predictCrop(cropInfo: cropInfo):
