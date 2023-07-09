@@ -49,7 +49,7 @@ async def createUser(user: User):
 @app.post('/loginUser')
 async def loginUser(userLogin: UserLogin,res: Response):
     user = users_serializer(collection.find({"email": userLogin.email}))
-    if user.len()==0:
+    if len(user)==0:
         raise HTTPException(status_code=404, detail="User not found")
     userPassword = userLogin.password
     if verifyPassword(userPassword,user[0]['password']):
