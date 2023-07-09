@@ -7,3 +7,5 @@ uvicorn
 pymongo
 bcrypt
 passlib
+httpx
+
