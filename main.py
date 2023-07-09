@@ -1,6 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from Models.userModel import User ,UserLogin
+from Schemas.userSchema import users_serializer
+from bson import ObjectId
+from DB_Config.database import collection
+from Utils.passwordHash import *
 import pandas as pd
 import pickle
 
@@ -30,6 +35,24 @@ class cropInfo(BaseModel):
 @app.get('/')
 async def welcomeCropPrediction():
     return {"result": "Welcome pridiction crop"}
+
+@app.post('/createUser')
+async def createUser(user: User):
+    user.password= getHashPassword(user.password);
+    _id = collection.insert_one(dict(user))
+    user = users_serializer(collection.find({"_id": _id.inserted_id}))
+    
+    return {"status": "Ok","data": user}
+
+@app.post('/loginUser')
+async def loginUser(userLogin: UserLogin,res: Response):
+    user = users_serializer(collection.find({"email": userLogin.email}))
+    userPassword = userLogin.password
+    if verifyPassword(userPassword,user[0]['password']):
+        res.status_code=200
+        return {"status": "Ok","data": user}
+    res.status_code=400
+    return {"status": "Bad request"}
 
 @app.post('/predictCrop')
 async def predictCrop(cropInfo: cropInfo):
