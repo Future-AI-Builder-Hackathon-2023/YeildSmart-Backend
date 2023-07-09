@@ -16,6 +16,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 cropRecomendation = pd.read_csv('./crop_prediction.csv')
