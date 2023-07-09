@@ -54,7 +54,7 @@ async def loginUser(userLogin: UserLogin,res: Response):
     userPassword = userLogin.password
     if verifyPassword(userPassword,user[0]['password']):
         res.status_code=200
-        return {"status": "Ok","data": user}
+        return {"status": "Ok","data": user[0]}
     raise HTTPException(status_code=404, detail="Invalid Cridential")
 
 @app.post('/predictCrop')
