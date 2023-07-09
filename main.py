@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Response
+from fastapi import FastAPI,Response,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from Models.userModel import User ,UserLogin
@@ -47,12 +47,13 @@ async def createUser(user: User):
 @app.post('/loginUser')
 async def loginUser(userLogin: UserLogin,res: Response):
     user = users_serializer(collection.find({"email": userLogin.email}))
+    if user.len()==0:
+        raise HTTPException(status_code=404, detail="User not found")
     userPassword = userLogin.password
     if verifyPassword(userPassword,user[0]['password']):
         res.status_code=200
         return {"status": "Ok","data": user}
-    res.status_code=400
-    return {"status": "Bad request"}
+    raise HTTPException(status_code=404, detail="Invalid Cridential")
 
 @app.post('/predictCrop')
 async def predictCrop(cropInfo: cropInfo):
